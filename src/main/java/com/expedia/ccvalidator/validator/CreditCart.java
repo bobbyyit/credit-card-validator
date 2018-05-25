@@ -12,4 +12,8 @@ public class CreditCart {
     public String getNumber() {
         return number;
     }
+
+    public String getExpiration() {
+        return expiration;
+    }
 }
