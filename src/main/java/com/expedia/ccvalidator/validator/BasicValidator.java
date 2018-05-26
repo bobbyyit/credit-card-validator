@@ -12,40 +12,50 @@ import static org.apache.commons.lang3.StringUtils.isNumeric;
 public class BasicValidator implements Validator {
 
     @Override
-    public Optional<String> validate(CreditCart creditCart) {
-        String[] expiration = creditCart.getExpiration().split("-");
-        int month = valueOf(expiration[0]);
-        int year = valueOf(expiration[1]);
-        Calendar expirationDate = getInstance();
-        expirationDate.set(YEAR, year);
-        expirationDate.set(MONTH, month);
+    public Optional<String> validate(CreditCart creditCard) {
+        String creditCartNumber = creditCard.getNumber();
+        Calendar now = getInstance();
+        Calendar expirationDate = setExpirationDate(creditCard);
 
-        if(getInstance().after(expirationDate)) {
-            return of("credit card has expired");
+        if(now.after(expirationDate)) {
+            return of("Credit card has expired");
         }
-
-
-        String creditCartNumber = creditCart.getNumber();
-        if (creditCartNumber.length() != 16) {
+        if (!has16Characters(creditCard.getNumber())) {
             return of("Does not contain 16 characters");
         }
         if (!isNumeric(creditCartNumber)) {
             return of("Contains illegal characters");
         }
-
-        int firstTwoDigit = valueOf(creditCartNumber.substring(0, 2));
-        if (!(isVisa(firstTwoDigit) || isMastercard(firstTwoDigit))) {
-            return of("Only Visa/Mastercard accepted");
+        if (!(isVisa(creditCartNumber) || isMastercard(creditCartNumber))) {
+            return of("Not Visa/Mastercard");
         }
 
         return empty();
     }
 
-    private boolean isVisa(int firstTwoDigit) {
+    private Calendar setExpirationDate(CreditCart creditCart) {
+        Calendar expirationDate = getInstance();
+        String[] expiration = creditCart.getExpiration().split("-");
+        expirationDate.set(YEAR, valueOf(expiration[1]));
+        expirationDate.set(MONTH, valueOf(expiration[0]));
+        return expirationDate;
+    }
+
+    private boolean has16Characters(String creditCartNumber) {
+        return creditCartNumber.length() == 16;
+    }
+
+    private boolean isVisa(String creditCartNumber) {
+        int firstTwoDigit = getFirstTwoDigit(creditCartNumber);
         return firstTwoDigit >= 40 && firstTwoDigit <= 49;
     }
 
-    private boolean isMastercard(int firstTwoDigit) {
+    private boolean isMastercard(String creditCartNumber) {
+        int firstTwoDigit = getFirstTwoDigit(creditCartNumber);
         return firstTwoDigit >= 51 && firstTwoDigit <= 55;
+    }
+
+    private Integer getFirstTwoDigit(String creditCartNumber) {
+        return valueOf(creditCartNumber.substring(0, 2));
     }
 }
