@@ -1,5 +1,7 @@
 package com.expedia.ccvalidator.validator;
 
+import com.expedia.ccvalidator.pojo.CreditCart;
+
 import java.util.Calendar;
 import java.util.Optional;
 

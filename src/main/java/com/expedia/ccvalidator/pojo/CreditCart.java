@@ -1,4 +1,4 @@
-package com.expedia.ccvalidator.validator;
+package com.expedia.ccvalidator.pojo;
 
 public class CreditCart {
     private String number;

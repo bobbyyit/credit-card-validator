@@ -1,5 +1,6 @@
 package com.expedia.ccvalidator.validator;
 
+import com.expedia.ccvalidator.pojo.CreditCart;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -71,7 +72,7 @@ public class BasicValidatorTest {
         assertThat(response.get(), is("Credit card has expired"));
     }
 
-    private CreditCart aCreditCart(String number, String expiration) {
+    public static CreditCart aCreditCart(String number, String expiration) {
         return new CreditCart(number, expiration);
     }
 
