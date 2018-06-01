@@ -19,11 +19,9 @@ public class BlackListCardValidatorTest {
 
     @Before
     public void setUp() throws Exception {
-        URL url = getClass().getResource("/black-listed-credit-cards.json");
-        ObjectMapper mapper = new ObjectMapper();
-        BlacklistCreditCards blacklist = mapper.readValue(new File(url.getPath()), BlacklistCreditCards.class);
+        BlacklistLoader blacklistLoader = new BlacklistLoader("/black-listed-credit-cards.json");
 
-        blackListedCardValidator = new BlackListedCardValidator(blacklist);
+        blackListedCardValidator = new BlackListedCardValidator(blacklistLoader.load());
     }
 
     @Test

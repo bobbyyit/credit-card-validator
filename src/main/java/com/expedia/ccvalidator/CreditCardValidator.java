@@ -1,47 +1,37 @@
 package com.expedia.ccvalidator;
 
 import com.expedia.ccvalidator.controller.CreditCardValidatorController;
+import com.expedia.ccvalidator.validator.BasicValidator;
+import com.expedia.ccvalidator.validator.BlackListedCardValidator;
+import com.expedia.ccvalidator.validator.BlacklistLoader;
+import com.expedia.ccvalidator.validator.ChecksumValidator;
+import ratpack.config.ConfigData;
+import ratpack.health.HealthCheckHandler;
+import ratpack.server.BaseDir;
 import ratpack.server.RatpackServer;
-
-import java.net.InetAddress;
+import ratpack.server.ServerConfig;
 
 import static java.net.InetAddress.getByName;
 import static ratpack.server.BaseDir.find;
-import static ratpack.server.RatpackServer.of;
+import static ratpack.server.RatpackServer.start;
 
 public class CreditCardValidator {
-    private RatpackServer server;
-    private String host;
-    private int port;
-
-    public CreditCardValidator(String host, int port) {
-        this.host = host;
-        this.port = port;
-    }
-
     public static void main(String[] args) throws Exception {
-        launch("0.0.0.0", 7777);
-    }
+        start(spec -> spec
+                .serverConfig(ServerConfig.embedded().port(8888)
+                        .address(getByName("0.0.0.0"))
+                        .baseDir(find()))
+                .handlers(chain -> {
+                    BlacklistLoader blacklistLoader = new BlacklistLoader("/black-listed-credit-cards.json");
 
-    private static CreditCardValidator launch(String host, int port) throws Exception {
-        CreditCardValidator creditCardValidator = new CreditCardValidator(host, port);
-        creditCardValidator.start();
-        return creditCardValidator;
-    }
-
-    private void start() throws Exception {
-        server = of(server ->
-                server.serverConfig(serverConfig ->
-                        serverConfig
-                                .port(port)
-                                .address(getByName(host))
-                                .baseDir(find()))
-                        .handlers(
-                                chain -> {
-                                    chain.get("validate", new CreditCardValidatorController());
-                                }
-                        )
+                    BasicValidator basicValidator = new BasicValidator();
+                    BlackListedCardValidator blackListedCardValidator = new BlackListedCardValidator(blacklistLoader.load());
+                    ChecksumValidator checksumValidator = new ChecksumValidator();
+                    chain
+                                    .get("", ctx -> ctx.render("You're up and running"))
+                                    .get("validate", new CreditCardValidatorController(basicValidator, blackListedCardValidator, checksumValidator));
+                        }
+                )
         );
-        server.start();
     }
 }
