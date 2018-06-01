@@ -1,7 +1,7 @@
 package com.expedia.ccvalidator.validator;
 
 import com.expedia.ccvalidator.pojo.BlacklistCreditCards;
-import com.expedia.ccvalidator.pojo.CreditCart;
+import com.expedia.ccvalidator.pojo.CreditCard;
 
 import java.util.Optional;
 
@@ -16,8 +16,8 @@ public class BlackListedCardValidator implements Validator {
     }
 
     @Override
-    public Optional<String> validate(CreditCart creditCart) {
-        if (blacklist.getBlacklist().contains(creditCart.getNumber())) {
+    public Optional<String> validate(CreditCard creditCard) {
+        if (blacklist.getBlacklist().contains(creditCard.getNumber())) {
             return of("Credit card is blacklisted");
         }
         return empty();

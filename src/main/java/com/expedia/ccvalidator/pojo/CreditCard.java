@@ -1,10 +1,10 @@
 package com.expedia.ccvalidator.pojo;
 
-public class CreditCart {
+public class CreditCard {
     private String number;
     private String expiration;
 
-    public CreditCart(String number, String expiration) {
+    public CreditCard(String number, String expiration) {
         this.number = number;
         this.expiration = expiration;
     }

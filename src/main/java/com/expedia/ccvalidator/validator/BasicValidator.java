@@ -1,6 +1,6 @@
 package com.expedia.ccvalidator.validator;
 
-import com.expedia.ccvalidator.pojo.CreditCart;
+import com.expedia.ccvalidator.pojo.CreditCard;
 
 import java.util.Calendar;
 import java.util.Optional;
@@ -14,7 +14,7 @@ import static org.apache.commons.lang3.StringUtils.isNumeric;
 public class BasicValidator implements Validator {
 
     @Override
-    public Optional<String> validate(CreditCart creditCard) {
+    public Optional<String> validate(CreditCard creditCard) {
         String creditCartNumber = creditCard.getNumber();
         Calendar now = getInstance();
         Calendar expirationDate = setExpirationDate(creditCard);
@@ -35,9 +35,9 @@ public class BasicValidator implements Validator {
         return empty();
     }
 
-    private Calendar setExpirationDate(CreditCart creditCart) {
+    private Calendar setExpirationDate(CreditCard creditCard) {
         Calendar expirationDate = getInstance();
-        String[] expiration = creditCart.getExpiration().split("-");
+        String[] expiration = creditCard.getExpiration().split("-");
         expirationDate.set(YEAR, valueOf(expiration[1]));
         expirationDate.set(MONTH, valueOf(expiration[0]));
         return expirationDate;

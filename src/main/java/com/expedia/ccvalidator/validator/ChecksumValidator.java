@@ -1,6 +1,6 @@
 package com.expedia.ccvalidator.validator;
 
-import com.expedia.ccvalidator.pojo.CreditCart;
+import com.expedia.ccvalidator.pojo.CreditCard;
 
 import java.util.Optional;
 
@@ -11,8 +11,8 @@ import static java.util.Optional.of;
 public class ChecksumValidator implements Validator {
 
     @Override
-    public Optional<String> validate(CreditCart creditCart) {
-        if (passesLuhnsAlgorithm(creditCart.getNumber())) {
+    public Optional<String> validate(CreditCard creditCard) {
+        if (passesLuhnsAlgorithm(creditCard.getNumber())) {
             return empty();
         } else {
             return of("Not a valid credit card");
