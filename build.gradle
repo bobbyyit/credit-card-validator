@@ -5,9 +5,18 @@ apply plugin: 'java'
 
 sourceCompatibility = 1.8
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "io.ratpack:ratpack-gradle:1.4.5"
+    }
+}
 repositories {
     mavenCentral()
 }
+apply plugin: "io.ratpack.ratpack-java"
 
 dependencies {
 
