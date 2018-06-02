@@ -29,6 +29,5 @@ public class ChecksumValidatorTest  {
         Optional<String> result = checksumValidator.validate(BasicValidatorTest.aCreditCart("5160750035000566", "01-2009"));
 
         assertThat(result.isPresent(), is(false));
-
     }
 }

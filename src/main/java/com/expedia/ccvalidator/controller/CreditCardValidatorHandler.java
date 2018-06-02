@@ -14,11 +14,11 @@ import static java.lang.String.join;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static ratpack.http.Status.OK;
 
-public class CreditCardValidatorController implements Handler {
+public class CreditCardValidatorHandler implements Handler {
 
     private Validator[] validators;
 
-    public CreditCardValidatorController(Validator... validators) {
+    public CreditCardValidatorHandler(Validator... validators) {
         this.validators = validators;
     }
 

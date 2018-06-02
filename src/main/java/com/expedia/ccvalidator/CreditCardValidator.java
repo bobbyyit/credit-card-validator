@@ -1,14 +1,10 @@
 package com.expedia.ccvalidator;
 
-import com.expedia.ccvalidator.controller.CreditCardValidatorController;
+import com.expedia.ccvalidator.controller.CreditCardValidatorHandler;
 import com.expedia.ccvalidator.validator.BasicValidator;
 import com.expedia.ccvalidator.validator.BlackListedCardValidator;
 import com.expedia.ccvalidator.validator.BlacklistLoader;
 import com.expedia.ccvalidator.validator.ChecksumValidator;
-import ratpack.config.ConfigData;
-import ratpack.health.HealthCheckHandler;
-import ratpack.server.BaseDir;
-import ratpack.server.RatpackServer;
 import ratpack.server.ServerConfig;
 
 import static java.net.InetAddress.getByName;
@@ -29,7 +25,7 @@ public class CreditCardValidator {
                     ChecksumValidator checksumValidator = new ChecksumValidator();
                     chain
                                     .get("", ctx -> ctx.render("You're up and running"))
-                                    .get("validate", new CreditCardValidatorController(basicValidator, blackListedCardValidator, checksumValidator));
+                                    .get("validate", new CreditCardValidatorHandler(basicValidator, blackListedCardValidator, checksumValidator));
                         }
                 )
         );
