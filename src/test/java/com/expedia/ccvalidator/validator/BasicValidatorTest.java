@@ -19,7 +19,7 @@ public class BasicValidatorTest {
     private BasicValidator validator;
 
     @Before
-    public void setUp() {
+    public void setUpValidator() {
         validator = new BasicValidator();
     }
 

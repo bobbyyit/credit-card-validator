@@ -1,12 +1,8 @@
 package com.expedia.ccvalidator.validator;
 
-import com.expedia.ccvalidator.pojo.BlacklistCreditCards;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.net.URL;
 import java.util.Optional;
 
 import static com.expedia.ccvalidator.validator.BasicValidatorTest.aCreditCart;
@@ -18,7 +14,7 @@ public class BlackListCardValidatorTest {
     private BlackListedCardValidator blackListedCardValidator;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUpValidator() throws Exception {
         BlacklistLoader blacklistLoader = new BlacklistLoader("/black-listed-credit-cards.json");
 
         blackListedCardValidator = new BlackListedCardValidator(blacklistLoader.load());

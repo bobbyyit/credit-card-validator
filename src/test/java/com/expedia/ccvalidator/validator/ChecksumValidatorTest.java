@@ -13,7 +13,7 @@ public class ChecksumValidatorTest  {
     private ChecksumValidator checksumValidator;
 
     @Before
-    public void setUp() {
+    public void setUpValidator() {
         checksumValidator = new ChecksumValidator();
     }
 
