@@ -1,38 +1,33 @@
 package com.expedia.ccvalidator.controller;
 
 import com.expedia.ccvalidator.pojo.CreditCard;
-import com.expedia.ccvalidator.validator.BasicValidator;
-import com.expedia.ccvalidator.validator.BlackListedCardValidator;
-import com.expedia.ccvalidator.validator.ChecksumValidator;
+import com.expedia.ccvalidator.validator.Validator;
 import ratpack.handling.Context;
 import ratpack.handling.Handler;
-import ratpack.http.Status;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.lang.String.join;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static ratpack.http.Status.OK;
 
 public class CreditCardValidatorController implements Handler {
 
-    private final BasicValidator basicValidator;
-    private final BlackListedCardValidator blackListedCardValidator;
-    private final ChecksumValidator checksumValidator;
+    private Validator[] validators;
 
-    public CreditCardValidatorController(BasicValidator basicValidator, BlackListedCardValidator blackListedCardValidator, ChecksumValidator checksumValidator) {
-        this.basicValidator = basicValidator;
-        this.blackListedCardValidator = blackListedCardValidator;
-        this.checksumValidator = checksumValidator;
+    public CreditCardValidatorController(Validator... validators) {
+        this.validators = validators;
     }
 
     @Override
-    public void handle(Context ctx) throws Exception {
+    public void handle(Context ctx) {
         ctx.header("content-type", "text/plain");
         Map<String, String> parameters = ctx.getRequest().getQueryParams();
-        ctx.getResponse().status(OK);
-        ctx.render("Ok!");
 
-        if (!parameters.containsKey("credit-card") && !parameters.containsKey("expiration")) {
+        if (isInvalidFormat(parameters)) {
             ctx.getResponse().status(400);
             ctx.render("Bad Parameters");
             return;
@@ -40,8 +35,34 @@ public class CreditCardValidatorController implements Handler {
 
         CreditCard card = new CreditCard(parameters.get("credit-card"), parameters.get("expiration"));
 
-        basicValidator.validate(card).ifPresent(ctx::render);
-        blackListedCardValidator.validate(card).ifPresent(ctx::render);
-        checksumValidator.validate(card).ifPresent(ctx::render);
+        String errorMessage = validateCreditCard(card);
+        if (hasErrors(errorMessage)) {
+            ctx.getResponse().status(400);
+            ctx.render(errorMessage);
+        } else {
+            ctx.getResponse().status(OK);
+            ctx.render("Ok credit card!");
+        }
+    }
+
+    private boolean hasErrors(String allMessages) {
+        return !isEmpty(allMessages);
+    }
+
+    private String validateCreditCard(CreditCard card) {
+        return join(", ", iterateValidators(card));
+    }
+
+    private List<String> iterateValidators(CreditCard card) {
+        List<String> errorMessages = new ArrayList<>();
+        for (Validator validator : validators) {
+            Optional<String> validatorResult = validator.validate(card);
+            validatorResult.ifPresent(errorMessages::add);
+        }
+        return errorMessages;
+    }
+
+    private boolean isInvalidFormat(Map<String, String> parameters) {
+        return !parameters.containsKey("credit-card") && !parameters.containsKey("expiration");
     }
 }
