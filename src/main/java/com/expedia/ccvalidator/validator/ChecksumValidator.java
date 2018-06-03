@@ -12,11 +12,14 @@ public class ChecksumValidator implements Validator {
 
     @Override
     public Optional<String> validate(CreditCard creditCard) {
-        if (passesLuhnsAlgorithm(creditCard.getNumber())) {
-            return empty();
-        } else {
+        try {
+            if (!passesLuhnsAlgorithm(creditCard.getNumber())) {
+                return of("Not a valid credit card");
+            }
+        } catch (NumberFormatException e) {
             return of("Not a valid credit card");
         }
+        return empty();
     }
 
     private boolean passesLuhnsAlgorithm(String creditCartNumber) {
